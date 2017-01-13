@@ -19,7 +19,7 @@ Be aware that you must have an SAP account.
 
 ## How to use this project
 * Download  firmata
-* Download and add to Arduino IDE [BH1750 library] (https://github.com/claws/BH1750)
+* Download and add [BH1750 library] (https://github.com/claws/BH1750) to Arduino IDE
 * Upload firmata to your board
 * Download Smart Gardening.xml and open it in Snap4Arduino
 * Happy Prototyping!
