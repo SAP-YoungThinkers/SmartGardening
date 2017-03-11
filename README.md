@@ -4,7 +4,7 @@ In the near future, agricultural food production will face an increasing number 
 
 You can find the sapUI5 application under 
 https://smartgardening-d067306trial.dispatcher.hanatrial.ondemand.com/index.html
-Be aware that you must have an SAP account.
+Be aware that you must have an SAP Cloud Platform account.
 
 ## Set-up
 * Arduino Nano
