@@ -20,13 +20,19 @@
 
   See file LICENSE.txt for further informations on licensing terms.
 
-  Last updated by Marc Bormeth: November 8th, 2016
+  Last updated by Marc Bormeth: 15.6.2017
+
+  Credits also to Christopher Laws for his library BH1750
 */
 
 #include <Servo.h>
 #include <Wire.h>
 #include <Firmata.h>
-#include <BH1750.h>
+#if (ARDUINO >= 100)
+  #include <Arduino.h>
+#else
+  #include <WProgram.h>
+#endif
 
 
 #define I2C_WRITE                   B00000000
@@ -54,6 +60,21 @@
 
 #ifdef FIRMATA_SERIAL_FEATURE
 SerialFirmata serialFeature;
+#endif
+
+// Legacy Wire.write() function fix
+#if (ARDUINO >= 100)
+  #define __wire_write(d) Wire.write(d)
+#else
+  #define __wire_write(d) Wire.send(d)
+#endif
+
+
+// Legacy Wire.read() function fix
+#if (ARDUINO >= 100)
+  #define __wire_read() Wire.read()
+#else
+  #define __wire_read() Wire.receive()
 #endif
 
 /* analog inputs */
@@ -95,6 +116,85 @@ byte detachedServoCount = 0;
 byte servoCount = 0;
 
 boolean isResetting = false;
+
+class BH1750 {
+
+  public:
+    BH1750 (byte addr = 0x23);
+    uint16_t readLightLevel(void);
+    void begin();
+
+  private:
+    int BH1750_I2CADDR;
+
+};
+
+BH1750::BH1750(byte addr) {
+
+  BH1750_I2CADDR = addr;
+
+}
+
+/**
+ * Begin I2C and configure sensor
+ * @param mode Measurment mode
+ */
+void BH1750::begin() {
+
+  // Initialize I2C
+  Wire.begin();
+
+  // Configure sensor in specified mode
+  //configure(mode);
+
+}
+
+
+
+
+/**
+ * Read light level from sensor
+ * @return  Lightness in lux (0 ~ 65535)
+ */
+uint16_t BH1750::readLightLevel(void) {
+
+  // Measurment result will be stored here
+  uint16_t level;
+
+  // Start transmission to sensor
+  //Wire.beginTransmission(BH1750_I2CADDR);
+
+  // Read two bytes from sensor
+  Wire.requestFrom(BH1750_I2CADDR, 2);
+
+  // Read two bytes, which are low and high parts of sensor value
+  level = __wire_read();
+  level <<= 8;
+  level |= __wire_read();
+
+  // Say goodbye!
+  //Wire.endTransmission();
+
+  // Send raw value if debug enabled
+  #ifdef BH1750_DEBUG
+    Serial.print(F("[BH1750] Raw value: "));
+    Serial.println(level);
+  #endif
+
+  // Convert raw value to lux
+  level /= 1.2;
+
+  // Send converted value, if debug enabled
+  #ifdef BH1750_DEBUG
+    Serial.print(F("[BH1750] Converted value: "));
+    Serial.println(level);
+  #endif
+
+  return level;
+
+}
+
+
 
 BH1750 lightMeter;
 
