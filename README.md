@@ -14,13 +14,13 @@ Be aware that you must have an SAP Cloud Platform account.
 * BH1750 for light intensity
 
 ## Wiring
-![Wiring] (https://github.com/SAP-YoungThinkers/SmartGardening/blob/master/images/wiring%20smart%20gardening.png)
+![Wiring](https://github.com/SAP-YoungThinkers/SmartGardening/blob/master/images/wiring%20smart%20gardening.png)
 
 
 ## How to use this project
 * Download  firmata
-* Download and add [BH1750 library] (https://github.com/claws/BH1750) to Arduino IDE
 * Upload firmata to your board
 * Download Smart Gardening.xml and open it in Snap4Arduino
 * In Snap4Arduino, connect your board (category "Arduino")
-* Happy Prototyping!
+
+**Happy Prototyping!**
