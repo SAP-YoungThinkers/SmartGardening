@@ -122,7 +122,8 @@ class BH1750 {
   public:
     BH1750 (byte addr = 0x23);
     uint16_t readLightLevel(void);
-    void begin();
+    void begin(uint8_t mode = 0x10);  //BH1750_CONTINUOUS_HIGH_RES_MODE
+    void configure (uint8_t mode);
 
   private:
     int BH1750_I2CADDR;
@@ -139,16 +140,28 @@ BH1750::BH1750(byte addr) {
  * Begin I2C and configure sensor
  * @param mode Measurment mode
  */
-void BH1750::begin() {
+void BH1750::begin(uint8_t mode) {
 
   // Initialize I2C
   Wire.begin();
 
   // Configure sensor in specified mode
-  //configure(mode);
+  configure(mode);
 
 }
 
+
+void BH1750::configure (uint8_t mode) {
+      // Send mode to sensor
+      Wire.beginTransmission(BH1750_I2CADDR);
+      __wire_write((uint8_t)mode);
+      Wire.endTransmission();
+
+      // Wait few moments for waking up
+      _delay_ms(10);
+
+    
+}
 
 
 
@@ -158,11 +171,11 @@ void BH1750::begin() {
  */
 uint16_t BH1750::readLightLevel(void) {
 
-  // Measurment result will be stored here
+  // Measurement result will be stored here
   uint16_t level;
 
   // Start transmission to sensor
-  //Wire.beginTransmission(BH1750_I2CADDR);
+  Wire.beginTransmission(BH1750_I2CADDR);
 
   // Read two bytes from sensor
   Wire.requestFrom(BH1750_I2CADDR, 2);
@@ -173,7 +186,7 @@ uint16_t BH1750::readLightLevel(void) {
   level |= __wire_read();
 
   // Say goodbye!
-  //Wire.endTransmission();
+  Wire.endTransmission();
 
   // Send raw value if debug enabled
   #ifdef BH1750_DEBUG
